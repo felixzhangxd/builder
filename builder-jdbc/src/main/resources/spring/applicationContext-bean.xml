@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <context:property-placeholder location="classpath:schema/auth.properties" />
+    <context:component-scan base-package="com.firebugsoft.builder.jdbc" />
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username"  value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+    <bean id="configuration" class="freemarker.template.Configuration">
+        <property name="directoryForTemplateLoading" value="classpath:/ftl" />
+        <property name="defaultEncoding" value="UTF-8" />
+    </bean>
+
+    <bean id="types" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="-7" value="java.lang.Boolean"/>
+                <entry key="-6" value="java.lang.Integer" />
+                <entry key="-5" value="java.lang.Long" />
+                <entry key="-4" value="java.lang.byte[]" />
+                <entry key="-2" value="java.lang.String" />
+                <entry key="-1" value="java.lang.String" />
+                <entry key="1" value="java.lang.String" />
+                <entry key="3" value="java.math.BigDecimal"/>
+                <entry key="4" value="java.lang.Integer"/>
+                <entry key="5" value="java.lang.Integer"/>
+                <entry key="6" value="java.lang.Float"/>
+                <entry key="7" value="java.lang.Float"/>
+                <entry key="8" value="java.lang.Double"/>
+                <entry key="12" value="java.lang.String"/>
+                <entry key="16" value="java.lang.Boolean"/>
+                <entry key="91" value="java.sql.Date"/>
+                <entry key="92" value="java.sql.Time"/>
+                <entry key="93" value="java.sql.Timestamp"/>
+            </map>
+        </constructor-arg>
+    </bean>
+</beans>
