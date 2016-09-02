@@ -6,18 +6,17 @@ import javax.persistence.*;
 import ${import};
 </#list>
 
-@Entity
 @Table(catalog = "${catalog}", name = "${tableName}")
-public class ${className}Po implements Serializable {<#list fields as field>
-    <#if field.id>@Id </#if>@Column(name = "${field.columnName}", unique = ${field.unique?string('true','false')}, nullable = ${field.nullable?string('true','false')})
-    private ${field.className} ${field.name}; //${field.remarks}</#list>
+public class ${className}Po implements Serializable {<#list columns as column>
+    <#if column.id>@Id </#if>@Column(name = "${column.columnName}")
+    private ${column.fieldShortType} ${column.fieldName}; //${column.remarks}</#list>
 
-<#list fields as field>
-    public ${field.className} ${field.get} () {
-        return this.${field.name};
+<#list columns as column>
+    public ${column.fieldShortType} ${column.fieldGetMethod} () {
+        return this.${column.fieldName};
     }
-    public void ${field.set} (${field.className} ${field.name}) {
-        this.${field.name} = ${field.name};
+    public void ${column.fieldSetMethod} (${column.fieldShortType} ${column.fieldName}) {
+        this.${column.fieldName} = ${column.fieldName};
     }
 </#list>
 }

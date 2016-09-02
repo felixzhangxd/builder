@@ -1,27 +1,50 @@
 package com.firebugsoft.builder.jdbc.bean;
 
+import com.firebugsoft.builder.jdbc.TypesMapping;
+import com.hxzxg.common.bean.utils.CharacterUtils;
+
 /** 数据库表字段 */
 public class Column {
-    private String name;    //字段名称
-    private Integer type;   //字段类型
-    private String remarks; //字段注释
-    private boolean isNullable; //可否为空
-    private boolean isAutoIncrement; //是否自增
+    private String columnName;    //字段名称
+    private Integer columnType;   //字段类型
+    private String remarks;       //字段注释
 
-    public String getName() {
-        return name;
+    public boolean isId() {
+        return "id".equals(columnName);
+    }
+    public String getFieldName() {
+        return CharacterUtils.toCamelLowerCase(this.columnName);
+    }
+    public String getFieldShortType() {
+        return TypesMapping.getShortType(this.columnType);
+    }
+    public String getFieldLongType() {
+        return TypesMapping.getLongType(this.columnType);
+    }
+    public String getFieldGetMethod() {
+        return CharacterUtils.toGetMethod(this.getFieldName());
+    }
+    public String getFieldSetMethod() {
+        return CharacterUtils.toSetMethod(this.getFieldName());
+    }
+    public String getFindMethod() {
+        return "findBy" + CharacterUtils.toCamelUpperCase(this.columnName);
+    }
+    //
+    public String getColumnName() {
+        return columnName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getColumnType() {
+        return columnType;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setColumnType(Integer columnType) {
+        this.columnType = columnType;
     }
 
     public String getRemarks() {
@@ -32,19 +55,4 @@ public class Column {
         this.remarks = remarks;
     }
 
-    public boolean isNullable() {
-        return isNullable;
-    }
-
-    public void setIsNullable(boolean isNullable) {
-        this.isNullable = isNullable;
-    }
-
-    public boolean isAutoIncrement() {
-        return isAutoIncrement;
-    }
-
-    public void setIsAutoIncrement(boolean isAutoIncrement) {
-        this.isAutoIncrement = isAutoIncrement;
-    }
 }

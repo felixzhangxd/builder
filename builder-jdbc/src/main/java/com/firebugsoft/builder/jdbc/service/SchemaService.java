@@ -1,100 +1,83 @@
 package com.firebugsoft.builder.jdbc.service;
 
-import com.firebugsoft.builder.jdbc.bean.*;
+import com.firebugsoft.builder.jdbc.bean.Column;
+import com.firebugsoft.builder.jdbc.bean.Index;
+import com.firebugsoft.builder.jdbc.bean.Table;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class SchemaService {
+    @Value(value="${package.name}")
+    private String packgeName;
     @Resource
     private DataSource dataSource;
     /** 单库处理 */
-    public Schema schema() throws SQLException {
+    public List<Table> tables() throws SQLException {
         Connection connection = dataSource.getConnection();
-        String catalog = connection.getCatalog();
         DatabaseMetaData meta =  connection.getMetaData();
         List<Table> tables  = new LinkedList<>();
         ResultSet rs = meta.getTables(null, null, null, new String[]{"TABLE"});
         while(rs.next()) {
             String type = rs.getString("TABLE_TYPE");
             if("TABLE".equals(type)) {
-                tables.add(table(meta, rs.getString("TABLE_NAME")));
+                tables.add(this.table(meta, rs.getString("TABLE_NAME")));
             }
         }
         rs.close();
-        return new Schema(catalog, tables);
+        return tables;
     }
+
     /** 单表处理 */
-    public Schema schema(String tableName) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        String catalog = connection.getCatalog();
-        DatabaseMetaData meta =  connection.getMetaData();
-        List<Table> tables  = new LinkedList<>();
-        tables.add(table(meta, tableName));
-        return new Schema(catalog, tables);
-    }
     public Table table(String tableName) throws SQLException {
-        return this.table(dataSource.getConnection().getMetaData(), tableName);
+        Connection connection = dataSource.getConnection();
+        DatabaseMetaData meta =  connection.getMetaData();
+        return this.table(meta, tableName);
     }
 
     private Table table(DatabaseMetaData meta, String tableName) throws SQLException {
         Table table = new Table();
-        table.setName(tableName);
-        table.setPks(this.pks(meta, tableName));
-        table.setIndexes(this.indexes(meta, tableName));
+        table.setPackageName(packgeName);
+        table.setCatalog(meta.getConnection().getCatalog());
+        table.setTableName(tableName);
         table.setColumns(this.columns(meta, tableName));
+        table.setIndexes(this.indexes(meta, tableName));
+        table.indexRelateColumn();
         return table;
     }
-    private List<Pk> pks(DatabaseMetaData meta, String tableName) throws SQLException {
-        List<Pk> pks = new LinkedList<Pk>();
-        ResultSet rs = meta.getPrimaryKeys(null,null, tableName);
-        while(rs.next()) {
-            Pk pk = new Pk();
-            pk.setColumnName(rs.getString("COLUMN_NAME"));
-            pks.add(pk);
-        }
-        rs.close();
-        return pks;
-    }
-    private List<Index> indexes(DatabaseMetaData meta, String tableName) throws SQLException {
-        Map<String, Index> indexes = new LinkedHashMap<>();
-        ResultSet rs = meta.getIndexInfo(null, null, tableName, false, true);
-        while (rs.next()){
-            String indexName = rs.getString("INDEX_NAME");
-            Index index = indexes.containsKey(indexName) ? indexes.get(indexName) : new Index();
-            index.setName(indexName);
-            index.setIsUnique(!rs.getBoolean("NON_UNIQUE"));
-            index.addColumnName(rs.getInt("ORDINAL_POSITION") - 1, rs.getString("COLUMN_NAME"));
-            indexes.put(indexName, index);
-        }
-        rs.close();
-        return new LinkedList<>(indexes.values());
-    }
+
     private List<Column> columns(DatabaseMetaData meta, String tableName) throws SQLException {
         List<Column> columns = new LinkedList<>();
         ResultSet rs = meta.getColumns(null,"%",tableName,"%");
         while(rs.next()) {
             Column column = new Column();
-            column.setName(rs.getString("COLUMN_NAME"));
-            column.setType(rs.getInt("DATA_TYPE"));
-            column.setIsNullable(rs.getBoolean("IS_NULLABLE"));
-            column.setIsAutoIncrement(rs.getBoolean("IS_AUTOINCREMENT"));
+            column.setColumnName(rs.getString("COLUMN_NAME"));
+            column.setColumnType(rs.getInt("DATA_TYPE"));
             column.setRemarks(rs.getString("REMARKS"));
             columns.add(column);
         }
         return columns;
     }
-
-    private static void print(String rs) throws SQLException {
-        System.out.println(rs);
+    private List<Index> indexes(DatabaseMetaData meta, String tableName) throws SQLException {
+        List<Index> indexes = new LinkedList<>();
+        ResultSet rs = meta.getIndexInfo(null, null, tableName, false, true);
+        while (rs.next()){
+            Index index = new Index();
+            index.setName(rs.getString("INDEX_NAME"));
+            index.setNonUnique(rs.getBoolean("NON_UNIQUE"));
+            index.setColumnName(rs.getString("COLUMN_NAME"));
+            indexes.add(index);
+        }
+        rs.close();
+        return indexes;
     }
+
     private static void print(ResultSet rs) throws SQLException {
         ResultSetMetaData meta = rs.getMetaData();
         List<String> columns = new LinkedList<>();

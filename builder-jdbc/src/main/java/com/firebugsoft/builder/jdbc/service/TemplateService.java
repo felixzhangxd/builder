@@ -1,7 +1,6 @@
 package com.firebugsoft.builder.jdbc.service;
 
-import com.firebugsoft.builder.jdbc.bean.Dao;
-import com.firebugsoft.builder.jdbc.bean.Po;
+import com.firebugsoft.builder.jdbc.bean.Table;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,25 +19,24 @@ public class TemplateService {
     @Resource
     private Configuration configuration;
 
-    public void output(Po po) throws IOException, TemplateException {
-        File dir = getOutputDir(po.getPackageName(), "po");
-        File file = new File(dir, po.getClassName() + "Po.java");
+    public void outputPo(Table table) throws IOException, TemplateException {
+        File dir = getOutputDir(table.getPackageName(), "po");
+        File file = new File(dir, table.getClassName() + "Po.java");
         Writer out = new FileWriter(file);
-        configuration.getTemplate("po.ftl").process(po, out);
+        configuration.getTemplate("po.ftl").process(table, out);
     }
-    public void output(Dao dao) throws IOException, TemplateException {
-        File dir = getOutputDir(dao.getPackageName(), "dao");
-        File file = new File(dir, dao.getClassName() + "Dao.java");
+    public void outputDao(Table table) throws IOException, TemplateException {
+        File dir = getOutputDir(table.getPackageName(), "dao");
+        File file = new File(dir, table.getClassName() + "Dao.java");
         Writer out = new FileWriter(file);
-        configuration.getTemplate("dao.ftl").process(dao, out);
+        configuration.getTemplate("dao.ftl").process(table, out);
     }
     private File getOutputDir(String prefixPackageName, String suffixPackageName) {
         String packageName = prefixPackageName + "." + suffixPackageName;
-        File dir = new File(outputBaseDir, packageName.replaceAll("^\\.$", "/"));
+        File dir = new File(outputBaseDir + "/" + packageName.replaceAll("\\.", "/"));
         if(!dir.exists()) {
             dir.mkdirs();
         }
         return dir;
     }
-
 }

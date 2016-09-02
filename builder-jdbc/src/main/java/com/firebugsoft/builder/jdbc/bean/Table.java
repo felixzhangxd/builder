@@ -1,28 +1,46 @@
 package com.firebugsoft.builder.jdbc.bean;
 
+import com.hxzxg.common.bean.utils.CharacterUtils;
+
+import java.util.LinkedList;
 import java.util.List;
 
 /** 数据库表 */
 public class Table {
-    private String name;
-    private List<Pk> pks;
-    private List<Index> indexes;
+    private String packageName;
+    private String catalog;
+    private String tableName;
     private List<Column> columns;
-
-    public String getName() {
-        return name;
+    private List<Index> indexes;
+    //
+    public List<String> getImports() {
+        List<String> imports = new LinkedList<>();
+        for(Column column : this.columns) {
+            String type = column.getFieldLongType();
+            if(!type.startsWith("java.lang")) {
+                imports.add(type);
+            }
+        }
+        return imports;
+    }
+    public String getClassName() {
+        return CharacterUtils.toCamelUpperCase(tableName);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getCatalog() {
+        return catalog;
     }
 
-    public List<Pk> getPks() {
-        return pks;
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 
-    public void setPks(List<Pk> pks) {
-        this.pks = pks;
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     public List<Index> getIndexes() {
@@ -39,5 +57,24 @@ public class Table {
 
     public void setColumns(List<Column> columns) {
         this.columns = columns;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public void indexRelateColumn() {
+        for(Index index : indexes) {
+            String columnName = index.getColumnName();
+            for(Column column : columns) {
+                if(columnName.equals(column.getColumnName())) {
+                    index.setColumn(column);
+                }
+            }
+        }
     }
 }

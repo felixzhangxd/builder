@@ -21,28 +21,4 @@
         <property name="defaultEncoding" value="UTF-8" />
     </bean>
 
-    <bean id="types" class="java.util.HashMap">
-        <constructor-arg>
-            <map>
-                <entry key="-7" value="java.lang.Boolean"/>
-                <entry key="-6" value="java.lang.Integer" />
-                <entry key="-5" value="java.lang.Long" />
-                <entry key="-4" value="java.lang.byte[]" />
-                <entry key="-2" value="java.lang.String" />
-                <entry key="-1" value="java.lang.String" />
-                <entry key="1" value="java.lang.String" />
-                <entry key="3" value="java.math.BigDecimal"/>
-                <entry key="4" value="java.lang.Integer"/>
-                <entry key="5" value="java.lang.Integer"/>
-                <entry key="6" value="java.lang.Float"/>
-                <entry key="7" value="java.lang.Float"/>
-                <entry key="8" value="java.lang.Double"/>
-                <entry key="12" value="java.lang.String"/>
-                <entry key="16" value="java.lang.Boolean"/>
-                <entry key="91" value="java.sql.Date"/>
-                <entry key="92" value="java.sql.Time"/>
-                <entry key="93" value="java.sql.Timestamp"/>
-            </map>
-        </constructor-arg>
-    </bean>
 </beans>
