@@ -1,58 +1,42 @@
 package com.firebugsoft.builder.jdbc.bean;
 
-import com.firebugsoft.builder.jdbc.TypesMapping;
-import com.hxzxg.common.bean.utils.CharacterUtils;
+import com.firebugsoft.builder.jdbc.utils.StringUtils;
+
 
 /** 数据库表字段 */
 public class Column {
-    private String columnName;    //字段名称
-    private Integer columnType;   //字段类型
-    private String remarks;       //字段注释
-
-    public boolean isId() {
-        return "id".equals(columnName);
-    }
-    public String getFieldName() {
-        return CharacterUtils.toCamelLowerCase(this.columnName);
-    }
-    public String getFieldShortType() {
-        return TypesMapping.getShortType(this.columnType);
-    }
-    public String getFieldLongType() {
-        return TypesMapping.getLongType(this.columnType);
-    }
-    public String getFieldGetMethod() {
-        return CharacterUtils.toGetMethod(this.getFieldName());
-    }
-    public String getFieldSetMethod() {
-        return CharacterUtils.toSetMethod(this.getFieldName());
-    }
-    public String getFindMethod() {
-        return "findBy" + CharacterUtils.toCamelUpperCase(this.columnName);
-    }
-    //
-    public String getColumnName() {
-        return columnName;
+    private String name; // 字段名称
+    private Integer type; // 字段类型
+    private String remarks; // 字段注释
+    
+    public Column(String name, Integer type, String remarks) {
+        this.name = name;
+        this.type = type;
+        this.remarks = remarks;
     }
 
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
+    public String getName() {
+        return this.name;
     }
 
-    public Integer getColumnType() {
-        return columnType;
+    public Integer getType() {
+        return this.type;
     }
 
-    public void setColumnType(Integer columnType) {
-        this.columnType = columnType;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getRemarks() {
-        return remarks;
+        return this.remarks;
     }
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-
+    
+    public String getGetMethod() {
+        String fieldName = StringUtils.toUpperCamelCase(name);
+        return StringUtils.toGetMethod(fieldName);
+    }
 }

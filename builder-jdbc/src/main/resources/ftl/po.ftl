@@ -1,22 +1,21 @@
-package ${packageName}.po;
+package ${packages}.po;
 
 import java.io.Serializable;
-import javax.persistence.*;
 <#list imports as import>
 import ${import};
 </#list>
 
-@Table(catalog = "${catalog}", name = "${tableName}")
-public class ${className}Po implements Serializable {<#list columns as column>
-    <#if column.id>@Id </#if>@Column(name = "${column.columnName}")
-    private ${column.fieldShortType} ${column.fieldName}; //${column.remarks}</#list>
+public class ${name}PO implements Serializable {
+<#list fields as field>
+    private ${field.shorttype} ${field.name}; //${field.remarks}
+</#list>
 
-<#list columns as column>
-    public ${column.fieldShortType} ${column.fieldGetMethod} () {
-        return this.${column.fieldName};
+<#list fields as field>
+    public ${field.shorttype} ${field.get} () {
+        return this.${field.name};
     }
-    public void ${column.fieldSetMethod} (${column.fieldShortType} ${column.fieldName}) {
-        this.${column.fieldName} = ${column.fieldName};
+    public void ${field.set} (${field.shorttype} ${field.name}) {
+        this.${field.name} = ${field.name};
     }
 </#list>
 }

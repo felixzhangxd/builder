@@ -13,12 +13,14 @@ import java.util.List;
 
 public class Client {
     public static void main(String[] args) throws IOException, TemplateException, SQLException {
+        System.setProperty("profile", "advertisement");
+//        System.setProperty("profile", "housekeeper");
         AbstractApplicationContext ctx = new ClassPathXmlApplicationContext("spring/applicationContext-*.xml");
         List<Table> tables = ctx.getBean(SchemaService.class).tables();
         //
         for(Table table : tables) {
-            ctx.getBean(TemplateService.class).outputPo(table);
-            ctx.getBean(TemplateService.class).outputDao(table);
+            ctx.getBean(TemplateService.class).outputPO(table);
+            ctx.getBean(TemplateService.class).outputDAO(table);
         }
         ctx.close();
     }

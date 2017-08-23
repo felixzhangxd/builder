@@ -1,4 +1,4 @@
-package com.firebugsoft.builder.jdbc;
+package com.firebugsoft.builder.jdbc.def;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,10 +54,10 @@ public class TypesMapping {
         shortTypes.put(93, "Timestamp");
     }
 
-    public static String getLongType(Integer type) {
+    public static String getLongtype(Integer type) {
         return instance.longTypes.get(type);
     }
-    public static String getShortType(Integer type) {
+    public static String getShorttype(Integer type) {
         return instance.shortTypes.get(type);
     }
 }
