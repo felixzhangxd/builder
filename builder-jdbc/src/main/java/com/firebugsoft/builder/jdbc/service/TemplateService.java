@@ -39,11 +39,36 @@ public class TemplateService {
             fields.add(new Field(column));
         }
         PO po = new PO(packages, name, fields);
-        //
         File dir = getOutputDir(outputPackge, "po");
         File file = new File(dir, po.getName() + "PO.java");
         Writer out = new FileWriter(file);
         configuration.getTemplate("po.ftl").process(po, out);
+    }
+    public void outputVTO(Table table) throws IOException, TemplateException {
+        String packages = outputPackge;
+        String name = StringUtils.toUpperCamelCase(table.getName());
+        List<Field> fields = new ArrayList<Field>(table.getColumns().size());
+        for(Column column : table.getColumns()) {
+            fields.add(new Field(column));
+        }
+        PO po = new PO(packages, name, fields);
+        File dir = getOutputDir(outputPackge, "vto");
+        File file = new File(dir, po.getName() + "VTO.java");
+        Writer out = new FileWriter(file);
+        configuration.getTemplate("vto.ftl").process(po, out);
+    }
+    public void outputVO(Table table) throws IOException, TemplateException {
+        String packages = outputPackge;
+        String name = StringUtils.toUpperCamelCase(table.getName());
+        List<Field> fields = new ArrayList<Field>(table.getColumns().size());
+        for(Column column : table.getColumns()) {
+            fields.add(new Field(column));
+        }
+        PO po = new PO(packages, name, fields);
+        File dir = getOutputDir(outputPackge, "vo");
+        File file = new File(dir, po.getName() + "VO.java");
+        Writer out = new FileWriter(file);
+        configuration.getTemplate("vo.ftl").process(po, out);
     }
 
     public void outputDAO(Table table) throws IOException, TemplateException {
@@ -52,7 +77,6 @@ public class TemplateService {
         dao.setName(StringUtils.toUpperCamelCase(table.getName()));
         dao.setTable(table.getName());
         dao.setColumns(table.getColumns());
-        //
         File dir = getOutputDir(outputPackge, "dao");
         File file = new File(dir, dao.getName() + "DAO.java");
         Writer out = new FileWriter(file);

@@ -17,9 +17,10 @@ public class Client {
 //        System.setProperty("profile", "housekeeper");
         AbstractApplicationContext ctx = new ClassPathXmlApplicationContext("spring/applicationContext-*.xml");
         List<Table> tables = ctx.getBean(SchemaService.class).tables();
-        //
         for(Table table : tables) {
             ctx.getBean(TemplateService.class).outputPO(table);
+            ctx.getBean(TemplateService.class).outputVTO(table);
+            ctx.getBean(TemplateService.class).outputVO(table);
             ctx.getBean(TemplateService.class).outputDAO(table);
         }
         ctx.close();
